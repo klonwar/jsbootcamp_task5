@@ -1,0 +1,5 @@
+node_modules/
+dist/
+.idea/
+!build/tele2.exe
+package-lock.json

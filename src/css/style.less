@@ -1,0 +1,27 @@
+@import "../../node_modules/uikit/src/less/uikit.theme.less";
+
+@red: #F44336;
+@orange: #FF5722;
+
+html {
+  font-family: "Fira Code", monospace;
+  color: #333;
+  user-select: none;
+  overflow: hidden;
+}
+
+html, body, #root {
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+@keyframes blink {
+  50% {background-color: @red}
+}
+
+.error-card {
+  animation-name: blink;
+  animation-duration: 1s;
+}
