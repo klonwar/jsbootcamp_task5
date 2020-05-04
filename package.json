@@ -45,6 +45,7 @@
     "@fortawesome/free-regular-svg-icons": "^5.12.1",
     "@fortawesome/free-solid-svg-icons": "^5.12.1",
     "@fortawesome/react-fontawesome": "^0.1.8",
+    "axios": "^0.19.2",
     "crypto-js": "^4.0.0",
     "final-form": "^4.19.1",
     "prop-types": "^15.7.2",
@@ -53,7 +54,9 @@
     "react-final-form": "^6.4.0",
     "react-redux": "^7.2.0",
     "react-router-dom": "^5.1.2",
+    "recompose": "^0.30.0",
     "redux": "^4.0.5",
+    "redux-thunk": "^2.3.0",
     "uikit": "^3.4.2"
   }
 }

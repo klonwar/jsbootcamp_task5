@@ -1,43 +1,28 @@
 import React from "react";
 import {Form, Field} from "react-final-form";
-import {log} from "#src/js/logger";
-import {Redirect, withRouter, useHistory} from "react-router-dom";
-import {encrypt} from "#src/js/functions.jsx";
+import {log, warn} from "#src/js/logger";
+import {Link, Redirect} from "react-router-dom";
 import PropTypes from "prop-types";
-import {baseURL} from "#src/js/constants";
+import OperationCreator from "#src/js/operation-creator";
+import {connect} from "react-redux";
 
 const Login = (props) => {
-  const history = useHistory();
+  const {isLogined, sendLogin} = props;
 
-  if (localStorage.currentUser) {
+  if (isLogined) {
     return <Redirect to={`/`}/>;
   }
 
   const onSubmit = async (items) => {
     const {login, password} = items;
 
-    const serverURL = baseURL + `/login`;
-    const resp = await fetch(serverURL, {
-      credentials: `include`,
-      method: `POST`,
-      headers: {'Content-Type': `application/json`},
-      body: JSON.stringify({login, password})
-    });
+    const resp = await sendLogin(login, password);
 
-    if (resp.ok) {
-      const jsonResp = await resp.json();
-      localStorage.currentUser = encrypt({
-        login,
-        username: jsonResp.name,
-        role: jsonResp.role
-      });
-
-      history.push(`/`);
-
-      return undefined;
-    } else {
+    if (resp) {
       return {login: `error`, password: `error`};
     }
+
+    return undefined;
   };
 
   const createInput = (data) => {
@@ -87,9 +72,11 @@ const Login = (props) => {
                   </div>
                   <div className={`uk-width-expand`}>
                     <button
-                      className={`uk-button uk-button-primary uk-width-1-1`}
+                      className={`uk-button uk-button-primary uk-width-1-1 uk-position-relative`}
                       type={`submit`} disabled={submitting}>
-                      {(!submitting) ? `Вход` : <span uk-spinner={`ratio: .6`}/>}
+                      <span className={(submitting) ? `uk-invisible` : ``}>Вход</span>
+                      <span className={`uk-position-center ${(submitting) ? `` : `uk-invisible`}`}
+                            uk-spinner={`ratio: .6`}/>
                     </button>
                   </div>
                 </div>
@@ -103,9 +90,19 @@ const Login = (props) => {
 
 };
 
-
 Login.propTypes = {
-  location: PropTypes.object.isRequired,
+  isLogined: PropTypes.bool.isRequired,
+  sendLogin: PropTypes.func.isRequired
 };
 
-export default withRouter(Login);
+const mapStateToProps = (state, ownProps) => ({
+  ...ownProps,
+  isLogined: state.isLogined
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  sendLogin: (login, password) => dispatch(OperationCreator.sendLogin(login, password)),
+});
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

@@ -4,17 +4,38 @@ import App from "#components/app/app";
 import UIkit from 'uikit';
 import Icons from 'uikit/dist/js/uikit-icons';
 import {BrowserRouter} from "react-router-dom";
+import {Provider} from "react-redux";
+import {createStore, applyMiddleware} from "redux";
 import "#src/css/style.less";
-import {baseURL} from "#src/js/constants";
+import {reducer} from "#src/js/reducer";
+import thunk from "redux-thunk";
+import {compose} from "recompose";
+import createApi from "#src/js/api";
+import ActionCreator from "#src/js/action-creator";
 
-UIkit.use(Icons);
+(() => {
+  UIkit.use(Icons);
 
-ReactDOM.render((
-    <BrowserRouter>
-      <App/>
-    </BrowserRouter>
-  ),
-  document.querySelector(`#root`)
-);
+  const api = createApi((...args) => store.dispatch(...args));
 
+  const store = createStore(
+    reducer,
+    compose(
+      applyMiddleware(thunk.withExtraArgument({api})),
+      window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+    )
+  );
 
+  store.dispatch(ActionCreator.loginStateFromStorage());
+
+  ReactDOM.render((
+      <BrowserRouter>
+        <Provider store={store}>
+          <App/>
+        </Provider>
+      </BrowserRouter>
+    ),
+    document.querySelector(`#root`)
+  );
+
+})();

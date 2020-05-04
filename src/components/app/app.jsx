@@ -3,34 +3,26 @@ import Login from "#components/login/login";
 import {log} from "#src/js/logger";
 import Main from "#components/main/main";
 import PropTypes from "prop-types";
+import {connect} from "react-redux";
 
 import {
   Switch,
   Route,
   Redirect,
   withRouter,
-  Link
 } from "react-router-dom";
 import Logout from "#components/logout/logout";
 import {decrypt} from "#src/js/functions.jsx";
-import Wrapper from "#components/wrapper/wrapper";
+import HeaderRoute from "#src/header-route/header-route.jsx";
 
 const App = (props) => {
-  const {location} = props;
+  const {location, isLogined} = props;
   const currentPath = location.pathname;
 
-  if (!localStorage.currentUser && currentPath !== `/login`) {
+  if (!isLogined && currentPath !== `/login`) {
     return (
       <Redirect to={`/login`}/>
     );
-  }
-
-  if (localStorage.currentUser && currentPath !== `/logout`) {
-    try {
-      decrypt(localStorage.currentUser);
-    } catch (e) {
-      return <Redirect to={`/logout`}/>;
-    }
   }
 
   return (
@@ -38,21 +30,12 @@ const App = (props) => {
       <Route path={`/login`}>
         <Login/>
       </Route>
-      <Route path={`/logout`}>
-        <Logout/>
-      </Route>
 
-      <Route path={`/main`}>
-        <Wrapper>
-          <Main/>
-        </Wrapper>
-      </Route>
-      <Route exact path={`/`}>
-        <Wrapper>
-          <Main/>
-        </Wrapper>
-      </Route>
-      <Route path={`/`}>
+      <HeaderRoute exact path={`/`}>
+        <Main/>
+      </HeaderRoute>
+
+      <Route>
         <Redirect to={`/`}/>
       </Route>
     </Switch>
@@ -61,7 +44,13 @@ const App = (props) => {
 };
 
 App.propTypes = {
-  location: PropTypes.object.isRequired
+  location: PropTypes.object.isRequired,
+  isLogined: PropTypes.bool
 };
 
-export default withRouter(App);
+const mapStateToProps = (state, ownProps) => ({
+  ...ownProps,
+  isLogined: state.isLogined
+});
+
+export default withRouter(connect(mapStateToProps, null)(App));
