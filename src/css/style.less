@@ -1,12 +1,24 @@
 @import "../../node_modules/uikit/src/less/uikit.theme.less";
 
+// My variables
+
 @red: #F44336;
 @orange: #FF5722;
+@green: #4CAF50;
+@text-color: #333;
+@font-family: "Fira Code", monospace;
+
+
+// UiKit override
+
+@global-danger-background: @red;
+@global-warning-background: @orange;
+@global-success-background: @green;
+@global-font-family: @font-family;
 
 html {
-  font-family: "Fira Code", monospace;
-  color: #333;
-  user-select: none;
+  font-family: @font-family;
+  color: @text-color;
   overflow: hidden;
 }
 
@@ -18,10 +30,62 @@ html, body, #root {
 }
 
 @keyframes blink {
-  50% {background-color: @red}
+  50% {
+    background-color: @red
+  }
 }
 
 .error-card {
   animation-name: blink;
   animation-duration: 1s;
+}
+
+
+input:-webkit-autofill {
+  &,
+  &::first-line,
+  &:hover,
+  &:focus,
+  &:active {
+    transition-delay: 9999s;
+    transition-property: background-color;
+
+    -webkit-text-fill-color: @text-color;
+    font-family: @font-family !important;
+    font-size: initial;
+  }
+}
+
+.input-hint {
+  opacity: 75%;
+  display: none;
+  z-index: @tooltip-z-index;
+  box-sizing: border-box;
+  max-width: 2*@tooltip-max-width;
+  padding: @tooltip-padding-vertical @tooltip-padding-horizontal;
+  background: @tooltip-background;
+  border-radius: @tooltip-border-radius;
+  color: @tooltip-color;
+  font-size: @tooltip-font-size;
+  .hook-tooltip;
+}
+
+/* Show */
+.input-hint.uk-active {
+  display: block;
+}
+
+.uk-form-pure {
+  &,
+  &:hover,
+  &:active,
+  &:focus {
+    .hook-form-blank;
+    background: transparent;
+    border: none;
+  }
+}
+
+.padding-xsmall {
+  padding: 3px;
 }

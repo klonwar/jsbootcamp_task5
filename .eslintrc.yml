@@ -26,3 +26,4 @@ rules:
     no-trailing-spaces: off
     no-console: off
     no-invalid-this: off
+    no-return-assign: off

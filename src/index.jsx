@@ -11,6 +11,8 @@ import {reducer} from "#src/js/reducer";
 import thunk from "redux-thunk";
 import {compose} from "recompose";
 import createApi from "#src/js/api";
+import ErrorBoundary from "#components/error-boundary/error-boundary";
+import OperationCreator from "#src/js/operation-creator";
 import ActionCreator from "#src/js/action-creator";
 
 (() => {
@@ -26,12 +28,14 @@ import ActionCreator from "#src/js/action-creator";
     )
   );
 
-  store.dispatch(ActionCreator.loginStateFromStorage());
+  store.dispatch(OperationCreator.getState());
 
   ReactDOM.render((
       <BrowserRouter>
         <Provider store={store}>
-          <App/>
+          <ErrorBoundary>
+            <App/>
+          </ErrorBoundary>
         </Provider>
       </BrowserRouter>
     ),

@@ -1,29 +1,85 @@
 import ActionType from "#src/js/action-type";
-import {decrypt} from "#src/js/functions";
 import React from "react";
-import {err} from "#src/js/logger";
+import {StorageHelper} from "#src/js/functions";
 
 const ActionCreator = {
-  login: () => ({
-    type: ActionType.LOGIN,
+  doNothing: () => ({
+    type: ActionType.NOTHING
   }),
 
-  logout: () => ({
-    type: ActionType.LOGOUT,
+  setLogined: (payload = {}) => ({
+    type: ActionType.LOGIN,
+    payload
   }),
+
+  setUsersList: (payload = []) => ({
+    type: ActionType.FILL_USERS_LIST,
+    payload
+  }),
+
+  setTodoList: (payload = []) => ({
+    type: ActionType.FILL_TODO_LIST,
+    payload
+  }),
+
+  setServerErrors: (payload = {}) => ({
+    type: ActionType.SERVER_ERROR,
+    payload
+  }),
+
+  setLoginErrors: (payload = {}) => ({
+    type: ActionType.LOGIN_ERROR,
+    payload
+  }),
+
+  setUsersListErrors: (payload = {}) => ({
+    type: ActionType.USERS_LIST_ERROR,
+    payload
+  }),
+
+  setTodoErrors: (payload = {}) => ({
+    type: ActionType.TODO_ERROR,
+    payload
+  }),
+
+  resetState: () => {
+    StorageHelper.clear();
+    return {
+      type: ActionType.LOGOUT,
+    };
+  },
 
   loginStateFromStorage: () => {
+    let state;
     try {
-      decrypt(localStorage.currentUser);
+      state = StorageHelper.userInfo.get();
     } catch (e) {
-      return {
-        type: ActionType.LOGOUT,
-      };
+      return ActionCreator.resetState();
     }
 
-    return {
-      type: ActionType.LOGIN,
-    };
+    return ActionCreator.setLogined(state);
+  },
+
+  usersListFromStorage: () => {
+    let state;
+    try {
+      state = StorageHelper.usersList.get();
+    } catch (e) {
+      return ActionCreator.doNothing();
+    }
+
+    return ActionCreator.setUsersList(state);
+  },
+
+  todoListFromStorage: () => {
+    let state;
+    try {
+      state = StorageHelper.todoList.get();
+    } catch (e) {
+      return ActionCreator.doNothing();
+    }
+
+    return ActionCreator.setTodoList(state);
   },
 };
 

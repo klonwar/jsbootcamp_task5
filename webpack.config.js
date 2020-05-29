@@ -53,7 +53,7 @@ const cssLoaders = (extra) => {
 const plugins = () => {
   return [
     new HTMLWebpackPlugin({
-      template: `./index.html`,
+      template: path.resolve(__dirname, `src/index.html`),
       minify: {
         collapseWhitespace: isProd
       }
@@ -94,7 +94,9 @@ module.exports = {
     port: 1337,
     hot: isDev,
     publicPath: `/`,
-    historyApiFallback: true,
+    historyApiFallback: {
+      index: `/`
+    },
   },
   devtool: isDev ? `source-map` : ``,
   plugins: plugins(),
