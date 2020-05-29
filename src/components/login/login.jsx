@@ -5,29 +5,21 @@ import {Link, Redirect} from "react-router-dom";
 import PropTypes from "prop-types";
 import OperationCreator from "#src/js/operation-creator";
 import {connect} from "react-redux";
+import {loginValidator, passwordValidator} from "#src/js/validators";
+import {isLoginedSelector, loginErrorSelector, passwordErrorSelector} from "#src/js/selectors";
 
 const Login = (props) => {
-  const {isLogined, sendLogin} = props;
+  const {isLogined, sendLogin, loginError, passwordError} = props;
 
   if (isLogined) {
     return <Redirect to={`/`}/>;
   }
 
-  const onSubmit = async (items) => {
-    const {login, password} = items;
-
-    const resp = await sendLogin(login, password);
-
-    if (resp) {
-      return {login: `error`, password: `error`};
-    }
-
-    return undefined;
-  };
+  const onSubmit = (items) => sendLogin(items.login, items.password);
 
   const createInput = (data) => {
     const instError = data.meta.error && data.meta.touched;
-    const submError = data.meta.submitError && !data.meta.active;
+    const submError = data.submitError && !data.meta.active;
 
     return (
       <div>
@@ -39,12 +31,6 @@ const Login = (props) => {
       </div>
     );
   };
-
-  const composeValidators = (...validators) => (value) => validators.reduce((e, validator) => e || validator(value), false);
-  const minLength = (length) => (value) => ((value + ``).length >= length) ? undefined : `min length ${length}`;
-  const required = (value) => (value ? undefined : `required`);
-  const loginValidator = composeValidators(minLength(3), required);
-  const passwordValidator = composeValidators(minLength(3), required);
 
   return (
     <div className={`uk-position-center`}>
@@ -58,11 +44,11 @@ const Login = (props) => {
             render={({handleSubmit, submitting}) => (
               <form uk-margin={``} onSubmit={handleSubmit}>
                 <Field name={`login`} disabled={submitting} type={`text`} icon={`user`}
-                       validate={loginValidator}>
+                       validate={loginValidator} submitError={loginError}>
                   {createInput}
                 </Field>
                 <Field name={`password`} disabled={submitting} type={`password`} icon={`lock`}
-                       validate={passwordValidator}>
+                       validate={passwordValidator} submitError={passwordError}>
                   {createInput}
                 </Field>
 
@@ -92,12 +78,15 @@ const Login = (props) => {
 
 Login.propTypes = {
   isLogined: PropTypes.bool.isRequired,
+  loginError: PropTypes.bool,
+  passwordError: PropTypes.bool,
   sendLogin: PropTypes.func.isRequired
 };
 
-const mapStateToProps = (state, ownProps) => ({
-  ...ownProps,
-  isLogined: state.isLogined
+const mapStateToProps = (state) => ({
+  isLogined: isLoginedSelector(state),
+  loginError: loginErrorSelector(state),
+  passwordError: passwordErrorSelector(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({

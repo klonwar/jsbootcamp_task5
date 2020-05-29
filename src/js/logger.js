@@ -5,19 +5,19 @@ const log = (s) => {
   console.log(jsonfy(s));
 };
 const warn = (s) => {
-  console.log(chalk.yellow(`-x ${jsonfy(s)}`));
+  console.warn(`-x ${jsonfy(s)}`);
 };
 const err = (s) => {
-  console.log(chalk.red(`-X ${jsonfy(s)}`));
+  console.error(`-X ${jsonfy(s)}`);
 };
 const succ = (s) => {
-  console.log(chalk.green(`-V ${jsonfy(s)}`));
+  console.log(`-V ${jsonfy(s)}`);
 };
 const inf = (s) => {
-  console.log(chalk.blue(jsonfy(s)));
+  console.log(`--> `+jsonfy(s));
 };
 const fillSucc = (s) => {
-  console.log(chalk.rgb(0, 0, 0).bgGreen(`-V ${jsonfy(s)} `));
+  console.log(`-V ${jsonfy(s)} `);
 };
 
 
