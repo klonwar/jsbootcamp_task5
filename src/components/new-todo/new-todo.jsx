@@ -9,22 +9,20 @@ import {todoAddErrorMessageSelector} from "#src/js/selectors";
 const NewTodo = ({addTodo, addErrorMessage}) => {
   const onSubmit = (items) => addTodo(items);
   const createInput = (data) => {
-    const instError = data.meta.error && data.meta.touched;
-    const submError = data.submitError && !data.meta.active;
-    const error = instError || submError;
+    const {input, disabled, className = ``, placeholder = ``, form} = data;
 
-    const submMessage = (data.submitError) ? data.submitError : ``;
-    const instMessage = (data.meta.error) ? data.meta.error : ``;
-    let message = (submMessage) ? submMessage : instMessage;
-    if (!error) {
+    const error = (data.meta.error && data.meta.touched) || (data.submitError && !data.meta.active);
+    let message = (data.submitError) ? data.submitError : data.meta.error;
+    if (!error || !message) {
       message = ``;
     }
+
     return (
-      <input {...data.input}
-             disabled={data.disabled}
-             className={`uk-input uk-form-blank ${(data.className) ? data.className : ``} ${(error) ? `uk-form-danger` : ``}`}
-             placeholder={(data.placeholder) ? data.placeholder : ``}
-             form={data.form} uk-tooltip={`title: ${message}`}
+      <input {...input}
+             disabled={disabled}
+             className={`uk-input uk-form-blank ${className} ${(error) ? `uk-form-danger` : ``}`}
+             placeholder={placeholder}
+             form={form} uk-tooltip={`title: ${message}`}
       />
     );
   };
@@ -47,7 +45,8 @@ const NewTodo = ({addTodo, addErrorMessage}) => {
       <td>
       </td>
       <td className={`uk-flex uk-flex-center uk-width-1-1 uk-height-1-1 uk-padding-remove`}>
-        <button disabled={submitting} type={`submit`} className={`uk-button uk-button-text uk-width-1-1 uk-padding-small`}
+        <button disabled={submitting} type={`submit`}
+                className={`uk-button uk-button-text uk-width-1-1 uk-padding-small`}
                 form={`newTodoForm`}>
           <span className={(submitting) ? `uk-hidden` : ``} uk-icon={`icon: plus`}/>
           <span className={(submitting) ? `` : `uk-hidden`} uk-spinner={``}/>
@@ -61,7 +60,6 @@ const NewTodo = ({addTodo, addErrorMessage}) => {
 NewTodo.propTypes = {
   addTodo: PropTypes.func.isRequired,
   addErrorMessage: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
-
 };
 
 const mapStateToProps = (state) => ({

@@ -22,22 +22,19 @@ class Todo extends React.PureComponent {
   }
 
   createInput = (data) => {
-    const instError = data.meta.error && data.meta.touched;
-    const submError = data.submitError && !data.meta.active;
-    const error = instError || submError;
+    const {input, disabled, className = ``, placeholder = ``, form} = data;
 
-    const submMessage = (data.submitError) ? data.submitError : ``;
-    const instMessage = (data.meta.error) ? data.meta.error : ``;
-    let message = (submMessage) ? submMessage : instMessage;
-    if (!error) {
+    const error = (data.meta.error && data.meta.touched) || (data.submitError && !data.meta.active);
+    let message = (data.submitError) ? data.submitError : data.meta.error;
+    if (!error || !message) {
       message = ``;
     }
     return (
-      <input {...data.input}
-             disabled={data.disabled}
-             className={`uk-input uk-form-blank ${(data.className) ? data.className : ``} ${(error) ? `uk-form-danger` : ``}`}
-             placeholder={(data.placeholder) ? data.placeholder : ``}
-             form={data.form} uk-tooltip={`title: ${message}`}
+      <input {...input}
+             disabled={disabled}
+             className={`uk-input uk-form-blank ${className} ${(error) ? `uk-form-danger` : ``}`}
+             placeholder={placeholder}
+             form={form} uk-tooltip={`title: ${message}`}
       />
     );
   };

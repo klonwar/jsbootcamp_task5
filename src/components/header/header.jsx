@@ -1,51 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
-import {decrypt} from "#src/js/functions.jsx";
 import {Link, withRouter} from "react-router-dom";
-import OperationCreator from "#src/js/operation-creator";
 import {connect} from "react-redux";
-import {inf, warn} from "#src/js/logger";
-import SpinnerWrapper from "#components/spinner-wrapper/spinner-wrapper";
-import {isAdminSelector, isLoginedSelector, roleSelector, usernameSelector} from "#src/js/selectors";
-
-class PureLogoutLink extends React.PureComponent {
-  state = {
-    submitting: false
-  };
-
-  handleClick = async () => {
-    this.setState({
-      submitting: this.props.isLogined
-    });
-    this.props.sendLogout();
-  };
-
-  render() {
-    return (
-      <Link to={`#`} className={`uk-position-relative ${(this.state.submitting) ? `uk-disabled` : ``}`}
-            onClick={this.handleClick}>
-        <SpinnerWrapper loading={this.state.submitting} ratio={`.6`}>
-          <span>Выйти</span>
-        </SpinnerWrapper>
-      </Link>
-    );
-  }
-}
-
-PureLogoutLink.propTypes = {
-  sendLogout: PropTypes.func.isRequired,
-  isLogined: PropTypes.bool.isRequired
-};
-
-const mapStateToProps = (state) => ({
-  isLogined: isLoginedSelector(state)
-});
-
-const mapDispatchToProps = (dispatch) => ({
-  sendLogout: () => dispatch(OperationCreator.sendLogout())
-});
-
-const LogoutLink = connect(mapStateToProps, mapDispatchToProps)(PureLogoutLink);
+import {isAdminSelector, usernameSelector} from "#src/js/selectors";
+import LogoutLink from "#components/logout-link/logout-link";
 
 const Header = (props) => {
   const {location, username, isAdmin} = props;
@@ -95,9 +53,9 @@ Header.propTypes = {
   username: PropTypes.string.isRequired,
 };
 
-const mapStateToProps2 = (state) => ({
+const mapStateToProps = (state) => ({
   username: usernameSelector(state),
   isAdmin: isAdminSelector(state)
 });
 
-export default withRouter(connect(mapStateToProps2)(Header));
+export default withRouter(connect(mapStateToProps)(Header));

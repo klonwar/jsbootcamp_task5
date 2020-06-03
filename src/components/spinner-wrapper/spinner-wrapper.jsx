@@ -8,10 +8,10 @@ const SpinnerWrapper = (props) => {
     ratio = `1`,
     className,
     relative,
+    loading = false,
     errorHandler = () => {}
   } = props;
 
-  let loading = (typeof props.loading === `function`) ? props.loading() : props.loading;
   const inner = (
     <>
       <span className={`uk-position-center ${(!loading) ? `uk-invisible` : ``}`} uk-spinner={`ratio: ${ratio}`}/>
@@ -29,7 +29,7 @@ const SpinnerWrapper = (props) => {
 
 SpinnerWrapper.propTypes = {
   children: PropTypes.node,
-  loading: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]).isRequired,
+  loading: PropTypes.bool,
   isError: PropTypes.bool,
   relative: PropTypes.bool,
   errorHandler: PropTypes.func,

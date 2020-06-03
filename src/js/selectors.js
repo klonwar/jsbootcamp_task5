@@ -10,8 +10,8 @@ export const usersListSelector = (state) => state.usersList;
 export const loginErrorSelector = (state) => state.errors?.login?.login;
 export const passwordErrorSelector = (state) => state.errors?.login?.password;
 export const todoLoadErrorSelector = (state) => state.errors?.todo?.load;
-export const todoAddErrorMessageSelector = (state) => (state.errors?.todo?.add?.message) ? state.errors?.todo?.add?.message : state.errors?.todo?.add;
-export const todoPutErrorMessageSelector = (state) => (state.errors?.todo?.put?.message) ? state.errors?.todo?.put?.message : state.errors?.todo?.put;
+export const todoAddErrorMessageSelector = (state) => state.errors?.todo?.add?.message;
+export const todoPutErrorMessageSelector = (state) => state.errors?.todo?.put?.message;
 export const usersLoadErrorSelector = (state) => state.errors?.users?.load;
 export const serverErrorSelector = (state) => state.errors?.server;
 
